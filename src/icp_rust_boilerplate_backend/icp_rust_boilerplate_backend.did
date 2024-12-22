@@ -1,3 +1,36 @@
+type Error = variant {
+  InvalidInput : record { msg : text };
+  NotFound : record { msg : text };
+};
+type Game = record {
+  id : nat64;
+  harga : vec nat64;
+  nominal : vec nat64;
+  name : text;
+};
+type GamePayload = record {
+  harga : vec nat64;
+  nominal : vec nat64;
+  name : text;
+};
+type Result = variant { Ok : Game; Err : Error };
+type Result_1 = variant { Ok : TopUp; Err : Error };
+type StatusTransaksi = variant { Gagal; Menunggu; Berhasil };
+type TopUp = record {
+  id : nat64;
+  status : StatusTransaksi;
+  harga : nat64;
+  nominal : nat64;
+  created_at : nat64;
+  user_id : text;
+  game_id : nat64;
+};
+type TopUpPayload = record { nominal : nat64; user_id : text; game_id : nat64 };
 service : {
-    "greet": (text) -> (text) query;
+  add_game : (GamePayload) -> (Result);
+  create_topup : (TopUpPayload) -> (Result_1);
+  get_all_games : () -> (vec Game) query;
+  get_game : (nat64) -> (Result) query;
+  get_topup : (nat64) -> (Result_1) query;
+  update_status : (nat64, StatusTransaksi) -> (Result_1);
 }
